@@ -25,8 +25,9 @@ jobs:
 
       - name: Install dependencies
         run: |
+          pip install setuptools
           pip install hidapi==0.14.0
-          pip install pyinstaller==5.13.2
+          pip install pyinstaller==6.5.0
 
       - name: Build EXE
         run: |
