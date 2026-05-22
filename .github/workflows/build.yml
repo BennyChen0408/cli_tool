@@ -1,0 +1,68 @@
+name: Build Microtouch CLI Tool
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+
+  build-win64:
+    name: Build Windows 64bit
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12 (64bit)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: 'x64'
+
+      - name: Install dependencies
+        run: |
+          pip install hidapi==0.14.0
+          pip install pyinstaller==5.13.2
+
+      - name: Build EXE
+        run: |
+          pyinstaller --onefile --name Microtouch_CLI_Tool_x64 Microtouch_CLI_Tool.py
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Microtouch_CLI_Tool_x64
+          path: dist/Microtouch_CLI_Tool_x64.exe
+
+  build-win32:
+    name: Build Windows 32bit (Win7 compatible)
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.8 (32bit) for Win7 compatibility
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.8'
+          architecture: 'x86'
+
+      - name: Install dependencies
+        run: |
+          pip install hidapi==0.14.0
+          pip install pyinstaller==5.13.2
+
+      - name: Build EXE
+        run: |
+          pyinstaller --onefile --name Microtouch_CLI_Tool_x86 Microtouch_CLI_Tool.py
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Microtouch_CLI_Tool_x86
+          path: dist/Microtouch_CLI_Tool_x86.exe
